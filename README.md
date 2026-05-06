@@ -1,36 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🔍 Audiovisual | Sistema de Achados e Perdidos
 
-## Getting Started
+> Repositório destinado ao desenvolvimento do Trabalho de Conclusão de Curso (TCC 1) do curso de Engenharia de Software da Universidade Tecnológica Federal do Paraná (UTFPR) - Campus Cornélio Procópio.
 
-First, run the development server:
+## 📋 Descrição do Projeto
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+Este projeto consiste em um sistema web para a gestão centralizada de itens achados e perdidos no campus da UTFPR. A plataforma permite que a comunidade acadêmica registre objetos encontrados e reivindique pertences perdidos, com um fluxo de validação e custódia gerenciado pelo Setor de Audiovisual.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ✨ Funcionalidades Principais (Requisitos)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+- **Autenticação Institucional:** Acesso restrito via Google OAuth 2.0 para domínios `@utfpr.edu.br` e `@alunos.utfpr.edu.br`.
+- **Feed Principal:** Grade de exibição de itens validados com filtros por categoria e data.
+- **Cadastro de Itens:** Registro de novos achados com descrição, local, data e upload de fotografia.
+- **Painel Administrativo:** Gestão de status dos itens (Pendente, Em Custódia, Devolvido) e geração de relatórios para o Setor de Audiovisual.
+- **Perfil do Usuário:** Consulta ao histórico de itens reportados e seus respectivos status.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🛠️ Tecnologias Utilizadas
 
-## Learn More
+- **Linguagem:** JavaScript (ES6+)
+- **Frontend:** Next.js e React.js
+- **Backend:** Node.js
+- **Banco de Dados:** MongoDB (NoSQL)
+- **Estilização:** Bootstrap 5 e CSS Modules
 
-To learn more about Next.js, take a look at the following resources:
+## 🚀 Como Executar o Projeto
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Clone o repositório:**
+   ```bash
+   git clone [https://github.com/Annyyzinha/Achados-e-Perdidos.git](https://github.com/Annyyzinha/Achados-e-Perdidos.git)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+2. **Instale as dependências:**
+    ```bash
+    npm install
 
-## Deploy on Vercel
+3. **Configure as variáveis de ambiente:**
+    ```bash
+    Crie um arquivo .env na raiz seguindo o modelo das credenciais do MongoDB e Google OAuth.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. **Inicie o servidor de desenvolvimento:**
+    ```bash
+    npm run dev
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+**Acadêmica:** Anny Vitoria Costa (RA: 2495449)
+
+**Orientadora:** Prof. Monique Emidio de Oliveira
