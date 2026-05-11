@@ -3,12 +3,12 @@ import React, { useState } from 'react';
 
 const mockItems = [
   { id: 1, titulo: 'Garrafa de Água Azul', local: 'Biblioteca', data: '16/04/2026', categoria: 'Outros', status: 'Recente', img: '/garrafaAzul.jpeg' },
-  { id: 2, titulo: 'Calculadora Científica', local: 'Bloco A', data: '15/04/2026', categoria: 'Eletrónicos', status: 'Recente', img: '/calcCient.jpeg' },
+  { id: 2, titulo: 'Calculadora Científica', local: 'Bloco A', data: '15/04/2026', categoria: 'Eletrônicos', status: 'Recente', img: '/calcCient.jpeg' },
   { id: 3, titulo: 'Caderno de Anotações', local: 'Cantina', data: '14/04/2026', categoria: 'Documentos', status: 'Devolvido', img: '/caderno.jpeg' },
   { id: 4, titulo: 'Casaco Preto', local: 'Laboratório 3', data: '10/04/2026', categoria: 'Vestuário', status: 'Devolvido', img: '/casaco.jpeg' },
 ];
 
-const categorias = ['Todos', 'Eletrónicos', 'Documentos', 'Vestuário', 'Outros'];
+const categorias = ['Todos', 'Eletrônicos', 'Documentos', 'Vestuário', 'Outros'];
 
 export default function FeedHome() {
   const [categoriaAtiva, setCategoriaAtiva] = useState('Todos');

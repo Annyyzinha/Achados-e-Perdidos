@@ -48,7 +48,7 @@ export default function CadastrarItem() {
           <label className="form-label fw-bold small text-uppercase">Categoria *</label>
           <select name="categoria" className="form-select" required onChange={handleChange}>
             <option value="">Selecione...</option>
-            <option value="Eletrónicos">Eletrónicos</option>
+            <option value="Eletrônicos">Eletrônicos</option>
             <option value="Documentos">Documentos</option>
             <option value="Vestuário">Vestuário</option>
             <option value="Outros">Outros</option>
