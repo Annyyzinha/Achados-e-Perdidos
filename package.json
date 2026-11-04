@@ -6,11 +6,15 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "test": "node tests/functional.test.mjs",
+    "test:load": "node tests/load_stress.mjs",
+    "seed": "node src/scripts/seed.mjs"
   },
   "dependencies": {
     "bootstrap": "^5.3.8",
+    "mongoose": "^9.9.5",
     "next": "16.2.4",
+    "next-auth": "^4.24.15",
     "react": "19.2.4",
     "react-dom": "19.2.4"
   },
@@ -19,3 +23,4 @@
     "eslint-config-next": "16.2.4"
   }
 }
+

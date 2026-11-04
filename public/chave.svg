@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 300" width="100%" height="100%">
+    <defs>
+      <linearGradient id="metal" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="#e2e8f0"/>
+        <stop offset="50%" stop-color="#94a3b8"/>
+        <stop offset="100%" stop-color="#64748b"/>
+      </linearGradient>
+      <linearGradient id="body" x1="0%" y1="0%" x2="0%" y2="100%">
+        <stop offset="0%" stop-color="#334155"/>
+        <stop offset="100%" stop-color="#0f172a"/>
+      </linearGradient>
+    </defs>
+    <!-- Argola metálica -->
+    <circle cx="150" cy="50" r="32" fill="none" stroke="url(#metal)" stroke-width="10"/>
+    <circle cx="150" cy="50" r="22" fill="none" stroke="#cbd5e1" stroke-width="2"/>
+    <!-- Corpo da Chave Canivete / Telecomando -->
+    <rect x="105" y="80" width="90" height="150" rx="24" fill="url(#body)" stroke="#1e293b" stroke-width="3" filter="drop-shadow(0 4px 6px rgba(0,0,0,0.3))"/>
+    <!-- Botões de Trava/Destrava -->
+    <circle cx="150" cy="115" r="14" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+    <path d="M145 116 v-4 a5 5 0 0 1 10 0 v4 h-10 z" fill="none" stroke="#ffffff" stroke-width="2"/>
+    <circle cx="150" cy="155" r="14" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+    <path d="M145 156 v-4 a5 5 0 0 1 10 0 v4" fill="none" stroke="#ffffff" stroke-width="2"/>
+    <rect x="143" y="156" width="14" height="8" rx="2" fill="#ffffff"/>
+    <circle cx="150" cy="195" r="11" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+    <!-- Lâmina metálica da chave -->
+    <path d="M142 230 v50 l8 6 l8 -6 v-50 z" fill="url(#metal)" stroke="#475569" stroke-width="2"/>
+    <path d="M146 240 v30" stroke="#475569" stroke-width="2"/>
+  </svg>
