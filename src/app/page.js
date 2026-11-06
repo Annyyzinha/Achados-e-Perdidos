@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 
@@ -12,20 +11,19 @@ export default function FeedHome() {
   const [itens, setItens] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Estados dos filtros de busca (RF05)
   const [busca, setBusca] = useState('');
   const [filtroLocal, setFiltroLocal] = useState('');
   const [dataInicio, setDataInicio] = useState('');
   const [dataFim, setDataFim] = useState('');
   const [mostrarFiltrosAvancados, setMostrarFiltrosAvancados] = useState(false);
 
-  // Estado do modal de reivindicação (RF06)
   const [itemSelecionado, setItemSelecionado] = useState(null);
   const [enviando, setEnviando] = useState(false);
 
   async function fetchItems() {
+    setLoading(true);
     try {
-      const res = await fetch('/api/items');
+      const res = await fetch('/api/items?limit=50', { cache: 'no-store' });
       const response = await res.json();
       if (response.success && Array.isArray(response.data)) {
         setItens(response.data);
@@ -43,6 +41,7 @@ export default function FeedHome() {
 
   const handleReivindicar = async () => {
     if (!itemSelecionado) return;
+
     if (!session?.user?.email) {
       alert('Você precisa estar autenticado com seu e-mail institucional para reivindicar um item.');
       window.location.href = '/login';
@@ -84,7 +83,6 @@ export default function FeedHome() {
 
   const filtrosAtivos = busca || filtroLocal || dataInicio || dataFim || categoriaAtiva !== 'Todos';
 
-  // Lógica multicritério de filtragem (RF05)
   const itensFiltrados = itens.filter(item => {
     const matchCategoria = categoriaAtiva === 'Todos' || item.category === categoriaAtiva;
     const matchStatus =
@@ -123,7 +121,6 @@ export default function FeedHome() {
 
   return (
     <div className="container py-4" style={{ maxWidth: '580px' }}>
-      {/* Barra de Pesquisa e Filtros (RF05) */}
       <div className="card border-0 shadow-sm mb-4" style={{ borderRadius: '10px' }}>
         <div className="card-body p-2">
           <div className="input-group">
@@ -196,7 +193,6 @@ export default function FeedHome() {
         </div>
       </div>
 
-      {/* Círculos de Categorias (Idêntico ao PageMenu.png) */}
       <div className="d-flex justify-content-center mb-4 pb-2" style={{ gap: '18px' }}>
         {categorias.map(cat => (
           <div
@@ -215,9 +211,7 @@ export default function FeedHome() {
                 transition: 'all 0.2s ease-in-out'
               }}
             >
-              <span
-                className={`fs-5 ${categoriaAtiva === cat ? 'text-white fw-bold' : 'text-secondary'}`}
-              >
+              <span className={`fs-5 ${categoriaAtiva === cat ? 'text-white fw-bold' : 'text-secondary'}`}>
                 {cat.charAt(0)}
               </span>
             </div>
@@ -235,17 +229,11 @@ export default function FeedHome() {
         ))}
       </div>
 
-      {/* Caixa de Abas Segmentada (Idêntico ao PageMenu.png) */}
       <div className="d-flex justify-content-center mb-4">
-        <div
-          className="bg-white border d-flex p-1 shadow-sm w-100"
-          style={{ borderRadius: '8px', maxWidth: '580px' }}
-        >
+        <div className="bg-white border d-flex p-1 shadow-sm w-100" style={{ borderRadius: '8px', maxWidth: '580px' }}>
           <button
             type="button"
-            className={`btn flex-fill py-2 fw-bold text-center border-0 ${
-              abaAtiva === 'Recente' ? 'text-dark' : 'text-muted'
-            }`}
+            className={`btn flex-fill py-2 fw-bold text-center border-0 ${abaAtiva === 'Recente' ? 'text-dark' : 'text-muted'}`}
             style={{
               borderBottom: abaAtiva === 'Recente' ? '3px solid #1e3a8a' : '3px solid transparent',
               borderRadius: '0',
@@ -258,9 +246,7 @@ export default function FeedHome() {
           </button>
           <button
             type="button"
-            className={`btn flex-fill py-2 fw-bold text-center border-0 ${
-              abaAtiva === 'Devolvido' ? 'text-dark' : 'text-muted'
-            }`}
+            className={`btn flex-fill py-2 fw-bold text-center border-0 ${abaAtiva === 'Devolvido' ? 'text-dark' : 'text-muted'}`}
             style={{
               borderBottom: abaAtiva === 'Devolvido' ? '3px solid #1e3a8a' : '3px solid transparent',
               borderRadius: '0',
@@ -274,7 +260,6 @@ export default function FeedHome() {
         </div>
       </div>
 
-      {/* Feed de Itens (Cards Estilizados conforme PageMenu.png) */}
       <div>
         {loading ? (
           <div className="text-center text-muted py-5">
@@ -296,9 +281,12 @@ export default function FeedHome() {
                   className="img-fluid"
                   alt={item.title}
                   style={{ maxHeight: '180px', maxWidth: '100%', objectFit: 'contain' }}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = '/garrafaAzul.jpeg';
+                  }}
                 />
               </div>
-
               <div className="card-body p-4 pt-1">
                 <div className="d-flex justify-content-between align-items-center mb-2">
                   <span
@@ -311,7 +299,6 @@ export default function FeedHome() {
                     {new Date(item.dateFound).toLocaleDateString('pt-BR')}
                   </small>
                 </div>
-
                 <h5 className="card-title fw-bold text-dark mb-1" style={{ fontSize: '1.2rem' }}>
                   {item.title}
                 </h5>
@@ -366,7 +353,6 @@ export default function FeedHome() {
         )}
       </div>
 
-      {/* Modal de Reivindicação (RF06) */}
       {itemSelecionado && (
         <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.55)' }} tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">

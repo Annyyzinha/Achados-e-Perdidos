@@ -13,11 +13,15 @@ export async function PATCH(request, { params }) {
       return NextResponse.json({ error: 'Item não encontrado' }, { status: 404 });
     }
 
+    const operador = moderatorEmail && moderatorEmail.trim() !== ''
+      ? moderatorEmail
+      : 'annycosta@alunos.utfpr.edu.br';
+
     item.status = status;
-    item.validatedBy = moderatorEmail || 'admin.derdi@utfpr.edu.br';
+    item.validatedBy = operador;
     item.auditTrail.push({
       action: `MUDANCA_STATUS_PARA_${status.toUpperCase()}`,
-      performedBy: moderatorEmail || 'admin.derdi@utfpr.edu.br',
+      performedBy: operador,
       date: new Date()
     });
 

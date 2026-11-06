@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
@@ -11,7 +10,7 @@ export default function PainelAdmin() {
 
   const carregarItens = async () => {
     try {
-      const res = await fetch('/api/items');
+      const res = await fetch('/api/items?limit=100', { cache: 'no-store' });
       const response = await res.json();
       if (response.success && Array.isArray(response.data)) {
         setItens(response.data);
@@ -34,10 +33,9 @@ export default function PainelAdmin() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           status: novoStatus,
-          moderatorEmail: session?.user?.email || 'derdi-cp@utfpr.edu.br'
+          moderatorEmail: session?.user?.email || 'annycosta@alunos.utfpr.edu.br'
         })
       });
-
       if (res.ok) {
         carregarItens();
       } else {
@@ -48,7 +46,6 @@ export default function PainelAdmin() {
     }
   };
 
-  // RF13: Exportação oficial do Relatório Gerencial Formatado para o DERDI
   const exportarRelatorio = () => {
     if (itens.length === 0) {
       alert('Não há itens no acervo para exportar.');
@@ -69,7 +66,7 @@ export default function PainelAdmin() {
     const horaEmissao = agora.toLocaleTimeString('pt-BR');
     const operador = session?.user?.name
       ? `${session.user.name} (${session.user.email})`
-      : 'derdi-cp@utfpr.edu.br';
+      : 'annycosta@alunos.utfpr.edu.br';
 
     const getBadgeStyle = (status) => {
       switch (status) {
@@ -119,11 +116,10 @@ export default function PainelAdmin() {
       </head>
       <body>
         <table border="0" cellspacing="0" cellpadding="0" style="border-collapse: collapse; width: 100%;">
-          <tr><td colspan="7" class="title-main">SISTEMA WEB DE ACHADOS E PERDIDOS — UTFPR-CP</td></tr>
-          <tr><td colspan="7" class="title-sub">DEPARTAMENTO DE RECURSOS DIDÁTICOS E DISCENTES (DERDI) / AUDIOVISUAL</td></tr>
-          <tr><td colspan="7" class="title-sub" style="font-style: italic;">Relatório Gerencial de Acervo e Auditoria LGPD • Emitido em: ${dataEmissao} às ${horaEmissao}</td></tr>
+          <tr><td colspan="7" class="title-main">SISTEMA WEB DE ACHADOS E PERDIDOS - UTFPR-CP</td></tr>
+          <tr><td colspan="7" class="title-sub">DEPARTAMENTO DE RECURSOS DIDÁTICOS (DERDI) / SETOR DE AUDIOVISUAL</td></tr>
+          <tr><td colspan="7" class="title-sub" style="font-style: italic;">Relatório Gerencial de Acervo e Auditoria LGPD - Emitido em: ${dataEmissao} às ${horaEmissao}</td></tr>
           <tr><td colspan="7" style="height: 14px; background-color: #ffffff;"></td></tr>
-
           <tr><td colspan="7" class="section-bar">PAINEL DE INDICADORES CONSOLIDADOS</td></tr>
           <tr>
             <td class="kpi-header" style="width: 14%;">Total Geral</td>
@@ -144,7 +140,6 @@ export default function PainelAdmin() {
             <td class="kpi-value" style="background-color: #dcfce7; color: #15803d;">${taxa}</td>
           </tr>
           <tr><td colspan="7" style="height: 18px; background-color: #ffffff;"></td></tr>
-
           <tr><td colspan="7" class="section-bar">RELAÇÃO NOMINAL DETALHADA DOS OBJETOS EM AUDITORIA</td></tr>
           <tr>
             <td class="th-col" style="text-align: left; width: 22%;">Item / Objeto</td>
@@ -202,14 +197,12 @@ export default function PainelAdmin() {
 
   return (
     <div className="container-fluid py-4" style={{ maxWidth: '1000px' }}>
-      {/* Cabeçalho com ações de Relatório */}
       <div className="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
         <div>
           <h2 className="h4 fw-bold mb-0" style={{ color: '#1e3a8a' }}>Gestão Audiovisual</h2>
           <span className="text-muted small">Controle de Achados e Perdidos (DERDI)</span>
         </div>
         <div className="d-flex gap-2 align-items-center">
-          {/* Botão Único de Exportação com formatação institucional */}
           <button onClick={exportarRelatorio} className="btn btn-success btn-sm fw-bold shadow-sm">
             Exportar Relatório
           </button>
@@ -222,7 +215,6 @@ export default function PainelAdmin() {
         </div>
       </div>
 
-      {/* Cards de Métricas */}
       <div className="row mb-4">
         <div className="col-3">
           <div className="card border-0 shadow-sm bg-warning bg-opacity-10">
@@ -258,7 +250,6 @@ export default function PainelAdmin() {
         </div>
       </div>
 
-      {/* Tabela Administrativa */}
       <div className="card border-0 shadow-sm overflow-hidden">
         <div className="table-responsive">
           <table className="table table-hover align-middle mb-0">
@@ -322,7 +313,6 @@ export default function PainelAdmin() {
                           <button
                             onClick={() => handleStatusChange(item._id, 'Expirado')}
                             className="btn btn-sm btn-outline-secondary fw-bold"
-                            title="RF14: Mover item antigo para doação/descarte"
                           >
                             Expirar
                           </button>

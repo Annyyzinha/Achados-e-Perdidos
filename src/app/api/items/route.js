@@ -2,46 +2,39 @@ import { NextResponse } from 'next/server';
 import connectToDatabase from '@/lib/mongodb';
 import Item from '@/models/Item';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET(request) {
   try {
     await connectToDatabase();
-
-    // 1. Extrair parâmetros de busca da URL
     const { searchParams } = new URL(request.url);
 
-    // Ler page e limit das query params com valores padrão
     const page = Math.max(1, parseInt(searchParams.get("page") || "1", 10));
-    let limit = parseInt(searchParams.get("limit") || "10", 10);
+    let limit = parseInt(searchParams.get("limit") || "50", 10);
 
-    // Definir um teto máximo de segurança (ex: no máximo 50 itens por requisição)
-    const MAX_LIMIT = 50;
+    const MAX_LIMIT = 100;
     if (limit > MAX_LIMIT) limit = MAX_LIMIT;
-    if (limit < 1) limit = 10;
+    if (limit < 1) limit = 50;
 
-    // Calcular offset (quantos documentos pular)
     const skip = (page - 1) * limit;
 
-    // Filtros opcionais 
     const filter = {};
     const statusParam = searchParams.get("status");
     if (statusParam) {
       filter.status = statusParam;
     }
 
-    // 2. Executar em paralelo a busca paginada e a contagem total de documentos
     const [items, totalItems] = await Promise.all([
       Item.find(filter)
-        .sort({ createdAt: -1 })
+        .sort({ dateFound: -1, createdAt: -1 })
         .skip(skip)
         .limit(limit)
         .lean(),
       Item.countDocuments(filter)
     ]);
 
-    // 3. Calcular os metadados da paginação
     const totalPages = Math.ceil(totalItems / limit);
 
-    // 4. Retornar os dados formatados
     return NextResponse.json(
       {
         success: true,
@@ -71,10 +64,9 @@ export async function POST(request) {
     await connectToDatabase();
     const body = await request.json();
 
-    // Validação Estrita LGPD/Auditoria (Resolve o CT-14)
     if (!body.reportedBy || body.reportedBy.trim() === '') {
       return NextResponse.json(
-        { error: 'Violação de Auditoria: O e-mail institucional do reportador é obrigatório.' }, 
+        { error: 'Violação de Auditoria: O e-mail institucional do reportador é obrigatório.' },
         { status: 400 }
       );
     }

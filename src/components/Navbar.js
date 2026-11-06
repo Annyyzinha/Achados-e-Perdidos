@@ -1,16 +1,13 @@
 "use client";
-
 import React from 'react';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
 
+const ADMIN_EMAIL = "annycosta@alunos.utfpr.edu.br";
+
 export default function Navbar() {
   const { data: session } = useSession();
-
-  // Verifica se o usuário logado pertence ao DERDI
-  const isDerdi =
-    session?.user?.role === 'DERDI' ||
-    session?.user?.email?.endsWith('@utfpr.edu.br');
+  const isDerdi = session?.user?.email === ADMIN_EMAIL;
 
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow-sm">
@@ -18,7 +15,6 @@ export default function Navbar() {
         <Link href="/" className="navbar-brand fw-bold">
           Audiovisual | Achados
         </Link>
-
         <button
           className="navbar-toggler"
           type="button"
@@ -30,7 +26,6 @@ export default function Navbar() {
         >
           <span className="navbar-toggler-icon"></span>
         </button>
-
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto align-items-center gap-2">
             <li className="nav-item">
@@ -43,8 +38,6 @@ export default function Navbar() {
                 + Cadastrar Item
               </Link>
             </li>
-
-            {/* Atalho visível EXCLUSIVAMENTE para servidores do DERDI */}
             {isDerdi && (
               <li className="nav-item">
                 <Link
@@ -56,7 +49,6 @@ export default function Navbar() {
                 </Link>
               </li>
             )}
-
             <li className="nav-item">
               <Link href="/perfil" className="nav-link">
                 Meu Perfil

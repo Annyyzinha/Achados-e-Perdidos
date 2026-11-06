@@ -3,6 +3,8 @@ import GoogleProvider from "next-auth/providers/google";
 import connectToDatabase from "@/lib/mongodb";
 import User from "@/models/User";
 
+const ADMIN_EMAIL = "annycosta@alunos.utfpr.edu.br";
+
 const authOptions = {
   providers: [
     GoogleProvider({
@@ -11,35 +13,26 @@ const authOptions = {
     }),
   ],
   callbacks: {
-
-    
-    // 1. Validação de Segurança e Domínio Institucional (RF01)
     async signIn({ user }) {
-
-      
       const email = user.email || "";
-
-      // Permite apenas contas institucionais da UTFPR
       const isInstitutional =
         email.endsWith("@alunos.utfpr.edu.br") ||
         email.endsWith("@utfpr.edu.br");
 
       if (!isInstitutional) {
-        // Redireciona de volta com parâmetro de erro de acesso negado
         return "/login?error=AccessDenied";
       }
 
-      // 2. Persistência e Auditoria LGPD no MongoDB (Quadro 2 e RNF07)
       try {
         await connectToDatabase();
         const existingUser = await User.findOne({ email });
+        const userRole = email === ADMIN_EMAIL ? "DERDI" : "ALUNO";
 
         if (!existingUser) {
-          // Cria o registro no primeiro acesso registrando a data de consentimento
           await User.create({
             name: user.name,
             email: user.email,
-            role: email.endsWith("@utfpr.edu.br") ? "DERDI" : "ALUNO",
+            role: userRole,
             consentDate: new Date(),
             auditLog: [
               {
@@ -50,7 +43,7 @@ const authOptions = {
             ],
           });
         } else {
-          // Registra a nova sessão na trilha de auditoria
+          existingUser.role = userRole;
           existingUser.auditLog.push({
             action: "LOGIN_EFETUADO",
             date: new Date(),
@@ -65,34 +58,16 @@ const authOptions = {
       return true;
     },
 
-    async jwt({ token, user }) {
-    if (token?.email) {
-      try {
-        await connectToDatabase();
-        const dbUser = await User.findOne({ email: token.email });
-        if (dbUser) {
-          token.role = dbUser.role;
-        }
-      } catch (error) {
-        console.error("Erro ao carregar role no JWT:", error);
+    async jwt({ token }) {
+      if (token?.email) {
+        token.role = token.email === ADMIN_EMAIL ? "DERDI" : "ALUNO";
       }
-    }
-    return token;
-  },
+      return token;
+    },
 
-    // 3. Propagação dos dados do usuário para a sessão do cliente
     async session({ session }) {
       if (session?.user?.email) {
-        try {
-          await connectToDatabase();
-          const dbUser = await User.findOne({ email: session.user.email });
-          if (dbUser) {
-            session.user.role = dbUser.role;
-            session.user.id = dbUser._id.toString();
-          }
-        } catch (error) {
-          console.error("Erro ao enriquecer sessão:", error);
-        }
+        session.user.role = session.user.email === ADMIN_EMAIL ? "DERDI" : "ALUNO";
       }
       return session;
     },
@@ -105,5 +80,4 @@ const authOptions = {
 };
 
 const handler = NextAuth(authOptions);
-
 export { handler as GET, handler as POST };

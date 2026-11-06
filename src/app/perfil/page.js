@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useSession, signOut } from 'next-auth/react';
@@ -17,7 +16,7 @@ export default function Perfil() {
     async function carregarMeusItens() {
       if (!emailUsuario) return;
       try {
-        const res = await fetch('/api/items');
+        const res = await fetch('/api/items?limit=100', { cache: 'no-store' });
         const response = await res.json();
         if (response.success && Array.isArray(response.data)) {
           const filtrados = response.data.filter(item => item.reportedBy === emailUsuario);
@@ -64,20 +63,19 @@ export default function Perfil() {
   const totalReportados = meusItens.length;
   const totalDevolvidos = meusItens.filter(i => i.status === 'Devolvido').length;
 
-  // Badges estilizados com as cores exatas do PagePerfil.png
   const getBadgeStyle = (itemStatus) => {
     switch (itemStatus) {
       case 'NoDERDI':
       case 'No Audiovisual':
-        return { backgroundColor: '#f59e0b', color: '#ffffff' }; // Âmbar/Laranja
+        return { backgroundColor: '#f59e0b', color: '#ffffff' };
       case 'Devolvido':
-        return { backgroundColor: '#10b981', color: '#ffffff' }; // Verde
+        return { backgroundColor: '#10b981', color: '#ffffff' };
       case 'Pendente':
-        return { backgroundColor: '#6b7280', color: '#ffffff' }; // Cinza
+        return { backgroundColor: '#6b7280', color: '#ffffff' };
       case 'Reivindicado':
-        return { backgroundColor: '#0284c7', color: '#ffffff' }; // Azul
+        return { backgroundColor: '#0284c7', color: '#ffffff' };
       case 'Rejeitado':
-        return { backgroundColor: '#ef4444', color: '#ffffff' }; // Vermelho
+        return { backgroundColor: '#ef4444', color: '#ffffff' };
       default:
         return { backgroundColor: '#64748b', color: '#ffffff' };
     }
@@ -97,7 +95,6 @@ export default function Perfil() {
 
   return (
     <div className="container py-4" style={{ maxWidth: '560px' }}>
-      {/* Cartão de Identificação (Idêntico ao PagePerfil.png) */}
       <div
         className="card border mb-4 overflow-hidden shadow-sm"
         style={{ borderRadius: '14px', borderColor: '#e2e8f0' }}
@@ -128,7 +125,6 @@ export default function Perfil() {
           </small>
         </div>
 
-        {/* Métricas do Perfil (singular "Devolvido" conforme PagePerfil.png) */}
         <div className="card-body bg-white d-flex justify-content-around text-center py-3">
           <div>
             <div className="fw-bold fs-4 mb-0 text-dark">{totalReportados}</div>
@@ -142,7 +138,6 @@ export default function Perfil() {
         </div>
       </div>
 
-      {/* Relação de Itens do Usuário */}
       <h3
         className="fw-bold text-uppercase mb-3 px-1"
         style={{ fontSize: '0.82rem', color: '#475569', letterSpacing: '0.5px' }}
@@ -173,7 +168,6 @@ export default function Perfil() {
                     Registrado em: {new Date(item.dateFound).toLocaleDateString('pt-BR')}
                   </small>
                 </div>
-
                 <div className="text-end">
                   <span
                     className="badge mb-1 d-inline-block px-3 py-1 fw-bold"
@@ -198,7 +192,6 @@ export default function Perfil() {
         )}
       </div>
 
-      {/* Botão de Logout */}
       <div className="mt-5 pt-3">
         <button
           onClick={() => signOut({ callbackUrl: '/login' })}
@@ -209,7 +202,6 @@ export default function Perfil() {
         </button>
       </div>
 
-      {/* Modal de Detalhes do Objeto e Trilha de Auditoria (LGPD) */}
       {itemSelecionado && (
         <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.55)' }} tabIndex="-1">
           <div className="modal-dialog modal-dialog-centered">
@@ -222,16 +214,18 @@ export default function Perfil() {
                   onClick={() => setItemSelecionado(null)}
                 ></button>
               </div>
-
               <div className="modal-body p-4">
                 <div className="text-center mb-3 bg-light rounded p-3 border">
                   <img
                     src={itemSelecionado.imageUrl || '/garrafaAzul.jpeg'}
                     alt={itemSelecionado.title}
                     style={{ maxHeight: '180px', maxWidth: '100%', objectFit: 'contain' }}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = '/garrafaAzul.jpeg';
+                    }}
                   />
                 </div>
-
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <h6 className="fw-bold mb-0 text-primary fs-5">{itemSelecionado.title}</h6>
                   <span
@@ -241,7 +235,6 @@ export default function Perfil() {
                     {getStatusLabel(itemSelecionado.status)}
                   </span>
                 </div>
-
                 <ul className="list-group list-group-flush small mb-3 border-top border-bottom">
                   <li className="list-group-item px-0 d-flex justify-content-between">
                     <span className="text-muted fw-bold">Categoria:</span>
@@ -271,7 +264,7 @@ export default function Perfil() {
                         <div key={idx} className="mb-2 pb-1 border-bottom last-border-none">
                           <div className="fw-bold text-dark">{log.action.replace(/_/g, ' ')}</div>
                           <div className="text-muted" style={{ fontSize: '0.75rem' }}>
-                            Por: {log.performedBy} • {new Date(log.date).toLocaleString('pt-BR')}
+                            Por: {log.performedBy} — {new Date(log.date).toLocaleString('pt-BR')}
                           </div>
                         </div>
                       ))
@@ -281,7 +274,6 @@ export default function Perfil() {
                   </div>
                 </div>
               </div>
-
               <div className="modal-footer border-0 pt-0">
                 <button
                   type="button"
